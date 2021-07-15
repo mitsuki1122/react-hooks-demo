@@ -65,15 +65,16 @@ const Demo = () => {
       <Form.Item
         name="note"
         label="Note"
+        help="测试help的显示与errors的关系"
         rules={[
           {
-            required: true, message: "请输入"
+            required: true, message: "请输入note"
           },
         ]}
       >
         <Input />
       </Form.Item>
-      <Form.Item
+      {/* <Form.Item
         name="gender"
         label="Gender"
         rules={[
@@ -112,7 +113,7 @@ const Demo = () => {
             </Form.Item>
           ) : null
         }}
-      </Form.Item>
+      </Form.Item> */}
       <Form.Item {...tailLayout}>
         <Button type="primary" htmlType="submit">
           Submit

@@ -20,7 +20,7 @@ return {
 
 const FormItemLabel = (props) => {
     console.log('itemmmm', props);
-    const {label, htmlFor, labelCol, requiredMark, required, tooltip} = props;
+    const {prefixCls, label, htmlFor, labelCol, requiredMark, required, tooltip} = props;
 
     if (!label) return null;
 
@@ -29,7 +29,7 @@ const FormItemLabel = (props) => {
             const mergerdLabelCol = labelCol || contextLabelCol || {};
             let labelChildren = label;
 
-            const labelClsBasic = 'ant-form-item-label';
+            const labelClsBasic = `${prefixCls}-item-label`;
             const labelColClassName = classNames( // 这个里面不是对象
                 labelClsBasic,
                 mergerdLabelCol.className
@@ -38,7 +38,7 @@ const FormItemLabel = (props) => {
             console.log('labelColClassName', labelColClassName);
 
             const labelClassName = classNames({
-                'ant-form-item-required': required,
+                [`${prefixCls}-item-required`]: required,
             });
             // Tooltip
             const tooltipProps = toTooltipProps(tooltip);

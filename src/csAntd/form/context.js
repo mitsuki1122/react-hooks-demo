@@ -5,3 +5,7 @@ export const FormContext = React.createContext({
     vertical: false,
     itemRef: (() => {}),
   });
+
+export const FormItemContext = React.createContext({
+  updateItemErrors: () => {},
+});

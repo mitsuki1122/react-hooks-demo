@@ -1,27 +1,54 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {Row} from 'antd';
 import {Field} from 'rc-field-form';
 import FormItemLabel from './formItemLabel';
 import FormItemInput from './formItemInput';
 import { toArray, getFieldId } from './utils';
 import { cloneElement } from '../utils';
-import { FormContext } from './context';
+import { FormContext, FormItemContext } from './context';
+import {getPrefixCls}  from './config';
 
 function hasValidName(name) {
     return !(name === undefined || name === null);
 }
 
 const FormItem = (props) => {
-    const {name, noStyle, label, children, required, rules, ...rest} = props;
+    const {name, noStyle, label, children, required, rules, validateStatus, help, prefixCls: customizePrefixCls, ...rest} = props;
     const {name: formName} = useContext(FormContext);
-    // console.log('mmmmm', props);
+    const {updateItemErrors} = useContext(FormItemContext);
+    const [domErrorVisible, innerSetDomErrorVisible] = useState(!!help);
 
+    const setDomErrorVisible = (visible) => {
+        // innerSetDomErrorVisible(visible);
+    };
     const hasName = hasValidName(name);
+
+    const prefixCls = getPrefixCls('form', customizePrefixCls);
 
     const renderLayout = (baseChildren, fieldId, meta, isRequired) => {
         if (noStyle) {
             return baseChildren;
         }
+
+        let mergedErrors;
+        if (help != undefined && help !== null) {
+            mergedErrors = toArray(help);
+        } else {
+            mergedErrors = meta ? meta.errors : [];
+            // 还有一些错误合并
+        }
+
+        let mergedValidateStatus = '';
+        if (validateStatus !== undefined) {
+            mergedValidateStatus = validateStatus;
+        } else if (meta?.validating) {
+            mergedValidateStatus = 'validateStatus';
+        } else if (meta?.errors?.length) {
+            mergedValidateStatus = 'error';
+        } else if (meta?.touched) {
+            mergedValidateStatus = 'success';
+        }
+
 
         return (
             <Row>
@@ -29,8 +56,15 @@ const FormItem = (props) => {
                     htmlFor={fieldId}
                     required={isRequired}
                     {...props} // 组件没有的属性加进来，只选需要的？提示不应该存在的属性可设置devtool提示？
+                    prefixCls={prefixCls}
                 ></FormItemLabel>
-                <FormItemInput>
+                <FormItemInput
+                {...props}
+                {...meta}
+                errors={mergedErrors}
+                prefixCls={prefixCls}
+                status={mergedValidateStatus}
+                onDomErrorVisibleChange={setDomErrorVisible}> {/*重复属性如何覆盖？*/}
                     {baseChildren}
                 </FormItemInput>
             </Row>
