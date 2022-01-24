@@ -2,7 +2,7 @@ import { useForm } from 'antd/lib/form/Form';
 import React, { useMemo } from 'react';
 import FieldForm from 'rc-field-form';
 import {FormContext} from './context';
-import {getPrefixCls}  from './config';
+import {getPrefixCls}  from '../config';
 
 // FieldForm
 

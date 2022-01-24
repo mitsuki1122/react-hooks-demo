@@ -6,17 +6,23 @@ import FormItemInput from './formItemInput';
 import { toArray, getFieldId } from './utils';
 import { cloneElement } from '../utils';
 import { FormContext, FormItemContext } from './context';
-import {getPrefixCls}  from './config';
+import {getPrefixCls}  from '../config';
+import FieldContext from 'rc-field-form/lib/FieldContext';
 
 function hasValidName(name) {
     return !(name === undefined || name === null);
 }
 
 const FormItem = (props) => {
-    const {name, noStyle, label, children, required, rules, validateStatus, help, prefixCls: customizePrefixCls, ...rest} = props;
+    const {name, noStyle, label, children, required, rules, validateStatus, help, prefixCls: customizePrefixCls,
+        trigger = 'onChange', validateTrigger, ...rest} = props;
     const {name: formName} = useContext(FormContext);
     const {updateItemErrors} = useContext(FormItemContext);
     const [domErrorVisible, innerSetDomErrorVisible] = useState(!!help);
+    const {validateTrigger: contextValidateTrigger} = useContext(FieldContext);
+
+    const mergedValidateTrigger = validateTrigger !== undefined ? validateStatus : contextValidateTrigger;
+    console.log('mergedValidateTrigger', mergedValidateTrigger);
 
     const setDomErrorVisible = (visible) => {
         // innerSetDomErrorVisible(visible);
@@ -78,7 +84,11 @@ const FormItem = (props) => {
     }
 
     return (
-        <Field {...props}>
+        <Field
+            {...props}
+            trigger={trigger}
+            validateTrigger={mergedValidateTrigger}
+        >
             {
                 (control, meta, context) => {
                     // console.log('Field----control', control); // onChange, value
@@ -118,6 +128,19 @@ const FormItem = (props) => {
                         // childNode = (
                         //     // <MemoInput />
                         // );
+
+                        const triggers = new Set([
+                            ...toArray(trigger),
+                            ...toArray(mergedValidateTrigger)
+                        ]);
+
+                        triggers.forEach(eventName => {
+                            childProps[eventName] = (...args) => {
+                                mergedControl[eventName]?.(...args);
+                                children.props[eventName]?.(...args);
+                            };
+                        });
+
                         childNode = cloneElement(children, childProps);
                     } else {
                         childNode =  children;

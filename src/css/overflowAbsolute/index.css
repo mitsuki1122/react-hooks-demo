@@ -1,0 +1,24 @@
+.box-wrap {
+    width: 200px;
+    height: 200px;
+    background-color: aqua;
+    overflow: hidden;
+    position: relative;
+}
+
+.a-absolute-area {
+    position: absolute;
+    top: 150px;
+    width: 100px;
+    height: 100px;
+    background-color: bisque;
+}
+
+.out-absolute-area {
+    position: absolute;
+    top: 350px;
+    left: 100px;
+    width: 100px;
+    height: 100px;
+    background-color:blue;
+}

@@ -1,0 +1,12 @@
+@import './variables.less';
+@import './mixins.less';
+
+@btn-prefix-cls: ~'@{ant-prefix}-btn';
+
+.@{btn-prefix-cls} {
+    position: relative; // 这个不加会出导致absolute以body为相对的盒子。。产生很多问题
+    // 省略了ant-btn，直接写在btn-prefix-cls这里的
+    &-primary {
+        .btn-primary();
+    }
+}

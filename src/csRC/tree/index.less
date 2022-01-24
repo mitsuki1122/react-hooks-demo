@@ -1,0 +1,32 @@
+.indent-unit {
+    width: 24px;
+    display: inline-block;
+}
+
+.treeSwitcherIcon {
+    font-size: 10px;
+    
+    svg {
+        transition: transform .3s;
+    }
+}
+
+.treeSwitcher {
+    display: inline-block;
+    width: 24px;
+    text-align: center;
+    line-height: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.treeSwitcherOpen {
+}
+
+.treeSwitcherClose {
+    .treeSwitcherIcon {
+        svg {
+            transform: rotate(-90deg);
+        }
+    }
+}
