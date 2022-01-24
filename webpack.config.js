@@ -1,10 +1,13 @@
-const  path = require('path');
-const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const webpack = require('webpack');
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   //入口
-  entry:'./src/main.js',
+  entry: './src/app.js',
+  // entry: './src/main.js',
+  // './src/mainAtd.js',
+
   // entry:'./src/entry-library.js',
   // 出口
   output: {
@@ -13,25 +16,93 @@ module.exports = {
     filename: 'bundle.js',
     // library: 'result'
   },
+  devtool: 'source-map',
   // 模块解析
   module: {
-    rules: [{
-        test: /(\.js|\.jsx)$/,
+    rules: [
+      {
+        test: /(\.js|\.jsx|\.ts|\.tsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            plugins: [require.resolve('react-refresh/babel')]
-          }
-        }
-      }, {
+            plugins: [require.resolve('react-refresh/babel')],
+          },
+        },
+      },
+      {
         test: /\.css$/,
-        use: ['style-loader','css-loader'],
-    }
-    ]
+        exclude: /node_modules/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              // modules: true
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        exclude: /src/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              // modules: true
+            },
+          },
+        ],
+      },
+
+      {
+        test: /\.less$/,
+        exclude: [/node_modules/],
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              // module: true,
+              modules: { localIdentName: '[local]___[hash:base64:5]' },
+            },
+          },
+          {
+            loader: 'less-loader',
+            options: {
+              lessOptions: {},
+            },
+          },
+        ],
+      },
+      {
+        test: /\.less$/,
+        include: [/node_modules/],
+        use: [
+          'style-loader',
+          { loader: 'css-loader' },
+          {
+            loader: 'less-loader',
+            options: {
+              lessOptions: {
+                modifyVars: {
+                  'primary-color': '#1DA57A',
+                },
+                javascriptEnabled: true,
+              },
+            },
+          },
+        ],
+      },
+    ],
   },
   resolve: {
-    // extensions: ['.js'],
+    extensions: ['.js', '.ts', '.jsx', '.tsx'],
+    alias: {
+      '@/components': path.resolve(__dirname, './src/components'),
+    },
   },
   devServer: {
     // contentBase: path.resolve(__dirname, "./static/"),
@@ -44,15 +115,18 @@ module.exports = {
     //   poll: false, // 默认false，如果不采用watch，那么可以采用poll（轮询）
     // },
   },
-  optimization: {    // 1. 这个配置必须
-    minimize: false
+  optimization: {
+    // 1. 这个配置必须
+    minimize: false,
   },
-  devtool: "source-map" ,
+  // devtool: "source-map" ,
   // 插件
-  plugins:[
-    // new ReactRefreshPlugin(),
+  plugins: [
     new HtmlWebpackPlugin({
-        template: 'index.html', // html模板
-    })
-  ]
-}
+      template: 'index.html', // html模板
+    }),
+    new webpack.DefinePlugin({
+      APP_TYPE: "'APPTest'",
+    }),
+  ],
+};
