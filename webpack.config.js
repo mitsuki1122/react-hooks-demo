@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Apis = require('./mock/index.ts');
 
 module.exports = {
   //入口
@@ -114,6 +115,14 @@ module.exports = {
     //   aggregateTimeout: 200, // 默认200，文件变更后延时多久rebuild
     //   poll: false, // 默认false，如果不采用watch，那么可以采用poll（轮询）
     // },
+    historyApiFallback: true,
+    onBeforeSetupMiddleware: (devServer) => {
+      devServer.app.get('/api/*', (request, response) => {
+        console.log('path', request.path);
+        response.send(Apis[request.path]);
+        // response.json(Apis[request.path]);
+      });
+    },
   },
   optimization: {
     // 1. 这个配置必须
